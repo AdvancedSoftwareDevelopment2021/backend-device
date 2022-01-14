@@ -22,29 +22,28 @@ import static java.lang.Thread.sleep;
  */
 @Slf4j
 @Component
-@ServerEndpoint("/websocket/{deviceName}")
+@ServerEndpoint("/websocket/{deviceId}")
 public class WebSocketDevice {
 
 //    public static Map<String, Session> sessionMap = new ConcurrentHashMap<>();
 
     private Session session;
 
-    private String deviceName;
+    private String deviceId;
 
     private boolean running = false;
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("deviceName") String deviceName) {
-        log.info("和边缘端成功接入, 本设备名称：{}", deviceName);
+    public void onOpen(Session session, @PathParam("deviceId") String deviceId) {
+        log.info("和边缘端成功接入, 本设备id：{}", deviceId);
         this.session = session;
-        this.deviceName = deviceName;
+        this.deviceId = deviceId;
         this.running = true;
-//        ActiveSendDeviceData();
+        ActiveSendDeviceData();
     }
 
     @OnClose
     public void onClose(Session session) {
-//        sessionMap.remove(session.getId());
         log.info("边缘端停止连接，session_id: {}", session.getId());
         this.session = null;
         this.running = false;
@@ -67,7 +66,7 @@ public class WebSocketDevice {
         try {
             while (this.running) {
                 String data = String.valueOf(UUID.randomUUID());
-                DeviceData deviceData = new DeviceData(this.deviceName, new Date(), data);
+                DeviceData deviceData = new DeviceData(this.deviceId, new Date(), data);
                 sendMessage(deviceData.toString());
                 sleep(1000);
             }
@@ -80,7 +79,7 @@ public class WebSocketDevice {
         try {
             if (this.running) {
                 String data = String.valueOf(UUID.randomUUID());
-                DeviceData deviceData = new DeviceData(this.deviceName, new Date(), data);
+                DeviceData deviceData = new DeviceData(this.deviceId, new Date(), data);
                 sendMessage(deviceData.toString());
             }
         } catch (IOException e) {

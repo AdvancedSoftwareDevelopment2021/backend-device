@@ -1,5 +1,10 @@
 package com.example.backenddevice.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Bean;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +13,10 @@ import java.util.Date;
  * @version 0.1
  * @date 2021.11.2
  */
-public class DeviceData {
+@NoArgsConstructor
+@Data
+public class DeviceData{
+
     String deviceId;
     Date timestamp;
     String data;
